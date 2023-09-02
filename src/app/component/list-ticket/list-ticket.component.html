@@ -1,0 +1,14 @@
+<ul class="mt-5 list-group">
+  <li class="list-group-item" *ngFor="let ticket of tickets$ | async">
+    <div class="row">
+      <div class="col-10">
+        Ticket: {{ ticket.id }}, {{ ticket.description }}
+      </div>
+      <div class="col-2">
+        <button class="btn btn-secondary list-group-item-dark" type="button">
+          Détail
+        </button>
+      </div>
+    </div>
+  </li>
+</ul>
