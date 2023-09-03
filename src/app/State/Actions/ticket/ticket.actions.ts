@@ -10,5 +10,21 @@ export const loadTicketsSuccess = createAction(
 
 export const loadTicketsFailure = createAction(
   "[Ticket] Load Tickets Failure",
-  props<{ error: any }>()
+  props<{ error: Error | string }>()
+);
+
+/**************** Add Book *******************/
+export const addTicket = createAction(
+  "[Ticket] add Ticket",
+  props<{ description: string }>()
+);
+
+export const addTicketSuccess = createAction(
+  "[Ticket] add Tickets Success",
+  props<{ ticket: Ticket }>()
+);
+
+export const addTicketFailure = createAction(
+  "[Ticket] add Tickets Failure",
+  props<{ error: Error | string }>()
 );

@@ -1,1 +1,15 @@
-<p>add-ticket works!</p>
+<form>
+  <div class="input-group mb-5">
+    <textarea
+      class="form-control"
+      [(ngModel)]="description"
+      name="description"
+      placeholder="Description"></textarea>
+    <button
+      class="btn btn-info"
+      (click)="onAddTicket()"
+      [disabled]="description === ''">
+      Ajout ticket
+    </button>
+  </div>
+</form>

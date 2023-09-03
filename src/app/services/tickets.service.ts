@@ -10,4 +10,8 @@ export class TicketsService {
   get listTikets() {
     return this.backendService.tickets();
   }
+
+  addTicket(description) {
+    return this.backendService.newTicket({ description });
+  }
 }

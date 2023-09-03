@@ -1,4 +1,4 @@
-import { createReducer, MetaReducer, on, props } from "@ngrx/store";
+import { createReducer, MetaReducer, on } from "@ngrx/store";
 import { Ticket } from "src/interfaces/ticket.interface";
 import * as fromAction from "../Actions/ticket/ticket.actions";
 
@@ -6,10 +6,12 @@ export const ticketFeatureKey = "tickets";
 
 export interface TicketState {
   readonly [ticketFeatureKey]: Ticket[];
+  readonly isLoader: boolean;
 }
 
 export const initialeState: TicketState = {
-  tickets: [],
+  [ticketFeatureKey]: [],
+  isLoader: false,
 };
 
 export const reducers = createReducer(
@@ -23,6 +25,13 @@ export const reducers = createReducer(
     return {
       ...state,
       tickets: props.tickets,
+      isLoader: true,
+    };
+  }),
+  on(fromAction.addTicketSuccess, (state, props) => {
+    return {
+      ...state,
+      tickets: [...state.tickets, props.ticket],
     };
   })
 );

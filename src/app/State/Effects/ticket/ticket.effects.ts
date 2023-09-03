@@ -20,6 +20,17 @@ export class TicketEffects {
     )
   );
 
+  addTicket$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActionTicket.addTicket),
+      mergeMap(({ description }) =>
+        this.ticketService
+          .addTicket(description)
+          .pipe(map((ticket) => fromActionTicket.addTicketSuccess({ ticket })))
+      )
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private ticketService: TicketsService

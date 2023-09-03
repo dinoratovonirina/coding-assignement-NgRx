@@ -11,6 +11,7 @@ import { ListTicketComponent } from "./component/list-ticket/list-ticket.compone
 import { AddTicketComponent } from "./component/add-ticket/add-ticket.component";
 import { FilterTicketComponent } from "./component/filter-ticket/filter-ticket.component";
 import { TicketEffects } from "./State/Effects/ticket/ticket.effects";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { TicketEffects } from "./State/Effects/ticket/ticket.effects";
       maxAge: 25,
     }),
     EffectsModule.forRoot([TicketEffects]),
+    FormsModule,
   ],
   providers: [BackendService],
   bootstrap: [AppComponent],
