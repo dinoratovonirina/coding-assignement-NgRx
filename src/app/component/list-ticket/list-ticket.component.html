@@ -1,5 +1,7 @@
 <app-add-ticket></app-add-ticket>
 
+<app-filter-ticket (textForFilter)="onFilterTicket($event)"></app-filter-ticket>
+
 <ng-container *ngIf="isLoader$ | async">
   <ul class="mt-5 list-group">
     <li class="list-group-item" *ngFor="let ticket of tickets$ | async">

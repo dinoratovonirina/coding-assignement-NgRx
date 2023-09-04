@@ -34,6 +34,12 @@ export const reducers = createReducer(
       tickets: [...state.tickets, props.ticket],
     };
   })
+  /*on(fromAction.filterSuccess, (state, props) => {
+    return {
+      ...state,
+      tickets: [props.ticket],
+    };
+  })*/
 );
 
 export const metaReducers: MetaReducer<TicketState>[] = [];

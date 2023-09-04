@@ -14,4 +14,8 @@ export class TicketsService {
   addTicket(description) {
     return this.backendService.newTicket({ description });
   }
+
+  filterTicket(arg: number) {
+    return this.backendService.ticket(arg);
+  }
 }

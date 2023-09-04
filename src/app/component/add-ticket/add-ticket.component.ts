@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Store, select } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { addTicket } from "src/app/State/Actions/ticket/ticket.actions";
 
 @Component({

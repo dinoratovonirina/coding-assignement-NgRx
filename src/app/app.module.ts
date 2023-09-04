@@ -12,6 +12,8 @@ import { AddTicketComponent } from "./component/add-ticket/add-ticket.component"
 import { FilterTicketComponent } from "./component/filter-ticket/filter-ticket.component";
 import { TicketEffects } from "./State/Effects/ticket/ticket.effects";
 import { FormsModule } from "@angular/forms";
+import { DetailTicketComponent } from "./component/detail-ticket/detail-ticket.component";
+import { AppRoutingModule } from "./app-routing.module";
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { FormsModule } from "@angular/forms";
     ListTicketComponent,
     AddTicketComponent,
     FilterTicketComponent,
+    DetailTicketComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,6 +40,7 @@ import { FormsModule } from "@angular/forms";
     }),
     EffectsModule.forRoot([TicketEffects]),
     FormsModule,
+    AppRoutingModule,
   ],
   providers: [BackendService],
   bootstrap: [AppComponent],

@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 
 @Component({
-  selector: 'app-filter-ticket',
-  templateUrl: './filter-ticket.component.html',
-  styleUrls: ['./filter-ticket.component.css']
+  selector: "app-filter-ticket",
+  templateUrl: "./filter-ticket.component.html",
+  styleUrls: ["./filter-ticket.component.css"],
 })
 export class FilterTicketComponent implements OnInit {
+  public critereForFindTicket: string = "";
 
-  constructor() { }
+  @Output() public textForFilter = new EventEmitter();
 
-  ngOnInit(): void {
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onFilterListTicket() {
+    this.textForFilter.emit(this.critereForFindTicket);
   }
-
 }

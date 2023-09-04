@@ -5,8 +5,9 @@ import {
   isLoaderSelector,
   listTicketSelector,
 } from "src/app/State/Selectors/ticket/ticket.selectors";
-import { Observable } from "rxjs";
+import { Observable, combineLatest, of } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-list-ticket",
@@ -16,6 +17,7 @@ import { Ticket } from "src/interfaces/ticket.interface";
 export class ListTicketComponent implements OnInit {
   tickets$: Observable<Ticket[]>;
   isLoader$: Observable<boolean>;
+  argFilterTicket$: Observable<any>;
 
   constructor(private store: Store) {}
 
@@ -28,5 +30,27 @@ export class ListTicketComponent implements OnInit {
 
     this.tickets$ = this.store.pipe(select(listTicketSelector));
     this.isLoader$ = this.store.pipe(select(isLoaderSelector));
+  }
+
+  onFilterTicket(arg: any) {
+    this.argFilterTicket$ = of(arg);
+    if (!!arg) {
+      this.tickets$ = this.filterTicket(this.tickets$, this.argFilterTicket$);
+    } else {
+      this.iniListTicket();
+    }
+  }
+
+  private filterTicket(
+    listTicket$: Observable<Ticket[]>,
+    argFilter$: Observable<any>
+  ) {
+    return combineLatest([listTicket$, argFilter$], (listTicket, argFilter) => {
+      return listTicket.filter(
+        (ticket: Ticket) =>
+          ticket.description.includes(argFilter) ||
+          ticket.id.toString().includes(argFilter)
+      );
+    });
   }
 }
