@@ -17,7 +17,6 @@ export class TicketEffects {
           map((tickets: Ticket[]) =>
             fromActionTicket.loadTicketsSuccess({ tickets })
           ),
-
           catchError(() => {
             return of(
               fromActionTicket.loadTicketsFailure({
@@ -38,7 +37,7 @@ export class TicketEffects {
           map((ticket) => fromActionTicket.addTicketSuccess({ ticket })),
           catchError(() => {
             return of(
-              fromActionTicket.loadTicketsFailure({
+              fromActionTicket.addTicketFailure({
                 error: "Erreur d'Ajout ticket",
               })
             );
@@ -48,15 +47,17 @@ export class TicketEffects {
     )
   );
 
-  /*filterTicket$ = createEffect(() =>
+  getOneTicket$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromActionTicket.filterTicket),
-      mergeMap(({ critere }) =>
-        this.ticketService.filterTicket(+critere).pipe(
-          map((ticket: Ticket) => fromActionTicket.filterSuccess({ ticket })),
+      ofType(fromActionTicket.getOneTicket),
+      mergeMap(({ id }) =>
+        this.ticketService.getTicketById(+id).pipe(
+          map((ticket: Ticket) =>
+            fromActionTicket.getOneTicketSuccess({ ticket })
+          ),
           catchError(() => {
             return of(
-              fromActionTicket.loadTicketsFailure({
+              fromActionTicket.getOneTicketFailure({
                 error: "Erreur lors du filtre",
               })
             );
@@ -64,7 +65,7 @@ export class TicketEffects {
         )
       )
     )
-  );*/
+  );
 
   constructor(
     private actions$: Actions,

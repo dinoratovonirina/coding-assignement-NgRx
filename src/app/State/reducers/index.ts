@@ -6,11 +6,13 @@ export const ticketFeatureKey = "tickets";
 
 export interface TicketState {
   readonly [ticketFeatureKey]: Ticket[];
+  readonly ticket: Ticket;
   readonly isLoader: boolean;
 }
 
 export const initialeState: TicketState = {
   [ticketFeatureKey]: [],
+  ticket: {} as Ticket,
   isLoader: false,
 };
 
@@ -33,13 +35,13 @@ export const reducers = createReducer(
       ...state,
       tickets: [...state.tickets, props.ticket],
     };
-  })
-  /*on(fromAction.filterSuccess, (state, props) => {
+  }),
+  on(fromAction.getOneTicketSuccess, (state, props) => {
     return {
       ...state,
-      tickets: [props.ticket],
+      ticket: props.ticket,
     };
-  })*/
+  })
 );
 
 export const metaReducers: MetaReducer<TicketState>[] = [];

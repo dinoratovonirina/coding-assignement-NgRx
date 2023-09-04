@@ -14,6 +14,9 @@ import { TicketEffects } from "./State/Effects/ticket/ticket.effects";
 import { FormsModule } from "@angular/forms";
 import { DetailTicketComponent } from "./component/detail-ticket/detail-ticket.component";
 import { AppRoutingModule } from "./app-routing.module";
+import { UsersService } from "./services/users.service";
+import { TicketsService } from "./services/tickets.service";
+import { DetailTicketResolver } from "./Resolvers/detailTicket.resolver";
 
 @NgModule({
   declarations: [
@@ -42,7 +45,12 @@ import { AppRoutingModule } from "./app-routing.module";
     FormsModule,
     AppRoutingModule,
   ],
-  providers: [BackendService],
+  providers: [
+    BackendService,
+    DetailTicketResolver,
+    TicketsService,
+    UsersService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

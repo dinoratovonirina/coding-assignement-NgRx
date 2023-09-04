@@ -8,6 +8,7 @@ import {
 import { Observable, combineLatest, of } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { map } from "rxjs/operators";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-list-ticket",
@@ -19,7 +20,7 @@ export class ListTicketComponent implements OnInit {
   isLoader$: Observable<boolean>;
   argFilterTicket$: Observable<any>;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, private route: Router) {}
 
   ngOnInit(): void {
     this.iniListTicket();
@@ -52,5 +53,9 @@ export class ListTicketComponent implements OnInit {
           ticket.id.toString().includes(argFilter)
       );
     });
+  }
+
+  onViewDetailTicket(arg: number) {
+    this.route.navigate(["detail-ticket", arg]);
   }
 }

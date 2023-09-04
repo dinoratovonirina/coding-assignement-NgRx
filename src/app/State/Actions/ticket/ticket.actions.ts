@@ -32,7 +32,7 @@ export const addTicketFailure = createAction(
 /**************** get one Ticket *******************/
 export const getOneTicket = createAction(
   "[Ticket] get one Ticket",
-  props<{ critere: any }>()
+  props<{ id: number }>()
 );
 
 export const getOneTicketSuccess = createAction(

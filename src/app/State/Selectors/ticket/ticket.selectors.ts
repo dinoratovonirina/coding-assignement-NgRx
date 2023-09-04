@@ -1,14 +1,19 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { TicketState, ticketFeatureKey } from "../../reducers";
 
-const selectTicket = createFeatureSelector<TicketState>(ticketFeatureKey);
+const selectTicketKey = createFeatureSelector<TicketState>(ticketFeatureKey);
 
 export const listTicketSelector = createSelector(
-  selectTicket,
+  selectTicketKey,
   (ticket) => ticket[ticketFeatureKey]
 );
 
+export const selectTicketSelector = createSelector(
+  selectTicketKey,
+  (oneTicket) => oneTicket.ticket
+);
+
 export const isLoaderSelector = createSelector(
-  selectTicket,
+  selectTicketKey,
   (ticket) => ticket.isLoader
 );
