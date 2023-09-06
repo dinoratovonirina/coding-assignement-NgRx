@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, of, throwError } from "rxjs";
-import { delay, tap } from "rxjs/operators";
+import { delay, map, tap } from "rxjs/operators";
 import { Ticket } from "../interfaces/ticket.interface";
 import { User } from "../interfaces/user.interface";
 
@@ -30,7 +30,11 @@ export class BackendService {
     },
   ];
 
-  public storedUsers: User[] = [{ id: 111, name: "Victor" }];
+  public storedUsers: User[] = [
+    { id: 111, name: "Victor" },
+    { id: 112, name: "Le Perce" },
+    { id: 113, name: "Coco" },
+  ];
 
   private lastId: number = 1;
 
@@ -65,7 +69,9 @@ export class BackendService {
 
     return of(newTicket).pipe(
       delay(randomDelay()),
-      tap((ticket: Ticket) => [...this.storedTickets, ticket])
+      tap((ticket: Ticket) => {
+        this.storedTickets = [...this.storedTickets, ticket];
+      })
     );
   }
 
@@ -76,8 +82,11 @@ export class BackendService {
     if (foundTicket && user) {
       return of(foundTicket).pipe(
         delay(randomDelay()),
-        tap((ticket: Ticket) => {
-          ticket.assigneeId = +userId;
+        map((ticket: Ticket) => {
+          return {
+            ...ticket,
+            assigneeId: +userId,
+          };
         })
       );
     }
@@ -87,12 +96,16 @@ export class BackendService {
 
   public complete(ticketId: number, completed: boolean): Observable<Ticket> {
     const foundTicket = this.findTicketById(+ticketId);
+    console.log(foundTicket);
 
     if (foundTicket) {
       return of(foundTicket).pipe(
         delay(randomDelay()),
-        tap((ticket: Ticket) => {
-          ticket.completed = true;
+        map((ticket: Ticket) => {
+          return {
+            ...ticket,
+            completed: true,
+          };
         })
       );
     }

@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { Store, select } from "@ngrx/store";
-import * as fromActionTicket from "../../State/Actions/ticket/ticket.actions";
 import {
   isLoaderSelector,
   listTicketSelector,
 } from "src/app/State/Selectors/ticket/ticket.selectors";
 import { Observable, combineLatest, of } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
-import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
+import { loadUsers } from "src/app/State/Actions/user/user.action";
+import { loadTickets } from "src/app/State/Actions/ticket/ticket.actions";
 
 @Component({
   selector: "app-list-ticket",
@@ -27,8 +27,6 @@ export class ListTicketComponent implements OnInit {
   }
 
   iniListTicket() {
-    this.store.dispatch(fromActionTicket.loadTickets());
-
     this.tickets$ = this.store.pipe(select(listTicketSelector));
     this.isLoader$ = this.store.pipe(select(isLoaderSelector));
   }

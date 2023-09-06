@@ -44,3 +44,35 @@ export const getOneTicketFailure = createAction(
   "[Ticket] get one Tickets Failure",
   props<{ error: Error | string }>()
 );
+
+/**************** update one Ticket *******************/
+export const updateOneTicket = createAction(
+  "[Ticket] update one Ticket",
+  props<{ ticketId: number; userId: number }>()
+);
+
+export const updateOneTicketSuccess = createAction(
+  "[Ticket] update one Tickets Success",
+  props<{ ticket: Ticket }>()
+);
+
+export const updateOneTicketFailure = createAction(
+  "[Ticket] update one Tickets Failure",
+  props<{ error: Error | string }>()
+);
+
+/**************** update complete one Ticket *******************/
+export const updateCompleteOneTicket = createAction(
+  "[Ticket] update complete one Ticket",
+  props<{ ticketId: number }>()
+);
+
+export const updateCompleteOneTicketSuccess = createAction(
+  "[Ticket] update complete one Tickets Success",
+  props<{ ticket: Ticket }>()
+);
+
+export const updateCompleteOneTicketFailure = createAction(
+  "[Ticket] update complete one Tickets Failure",
+  props<{ error: Error | string }>()
+);

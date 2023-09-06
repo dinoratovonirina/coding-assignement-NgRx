@@ -26,20 +26,31 @@ export const reducers = createReducer(
   on(fromAction.loadTicketsSuccess, (state, props) => {
     return {
       ...state,
-      tickets: props.tickets,
+      [ticketFeatureKey]: props.tickets,
       isLoader: true,
     };
   }),
   on(fromAction.addTicketSuccess, (state, props) => {
     return {
       ...state,
-      tickets: [...state.tickets, props.ticket],
+      [ticketFeatureKey]: [...state.tickets, props.ticket],
     };
   }),
   on(fromAction.getOneTicketSuccess, (state, props) => {
     return {
       ...state,
       ticket: props.ticket,
+    };
+  }),
+  on(fromAction.updateOneTicketSuccess, (state, props) => {
+    const updateOneTicket: Ticket[] = state.tickets.map(
+      (ticketForUpdate: Ticket) =>
+        ticketForUpdate.id === props.ticket.id ? props.ticket : ticketForUpdate
+    );
+
+    return {
+      ...state,
+      tickets: updateOneTicket,
     };
   })
 );

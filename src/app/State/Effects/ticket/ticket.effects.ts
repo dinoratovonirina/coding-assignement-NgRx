@@ -34,14 +34,14 @@ export class TicketEffects {
       ofType(fromActionTicket.addTicket),
       mergeMap(({ description }) =>
         this.ticketService.addTicket(description).pipe(
-          map((ticket) => fromActionTicket.addTicketSuccess({ ticket })),
-          catchError(() => {
-            return of(
-              fromActionTicket.addTicketFailure({
-                error: "Erreur d'Ajout ticket",
-              })
-            );
-          })
+          map((ticket) => fromActionTicket.addTicketSuccess({ ticket }))
+          //catchError(() => {
+          //return of(
+          //fromActionTicket.addTicketFailure({
+          //error: "Erreur d'Ajout ticket",
+          //})
+          //);
+          //})
         )
       )
     )
@@ -59,6 +59,46 @@ export class TicketEffects {
             return of(
               fromActionTicket.getOneTicketFailure({
                 error: "Erreur lors du filtre",
+              })
+            );
+          })
+        )
+      )
+    )
+  );
+
+  updateAssignTicket$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActionTicket.updateOneTicket),
+      mergeMap(({ ticketId, userId }) =>
+        this.ticketService.updateTicketOnSelectUser(ticketId, userId).pipe(
+          map((ticket: Ticket) =>
+            fromActionTicket.updateOneTicketSuccess({ ticket })
+          ),
+          catchError((error) => {
+            return of(
+              fromActionTicket.updateOneTicketFailure({
+                error: "Erreur de recuperation" + error,
+              })
+            );
+          })
+        )
+      )
+    )
+  );
+
+  updateCompleteTicket$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActionTicket.updateCompleteOneTicket),
+      mergeMap(({ ticketId }) =>
+        this.ticketService.updateTicketonComplet(ticketId).pipe(
+          map((ticket: Ticket) =>
+            fromActionTicket.updateCompleteOneTicketSuccess({ ticket })
+          ),
+          catchError((error) => {
+            return of(
+              fromActionTicket.updateCompleteOneTicketFailure({
+                error: "Erreur de recuperation",
               })
             );
           })

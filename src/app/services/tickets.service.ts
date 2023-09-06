@@ -12,10 +12,18 @@ export class TicketsService {
   }
 
   addTicket(description) {
-    return this.backendService.newTicket({ description });
+    return this.backendService.newTicket({ description: description });
   }
 
   getTicketById(arg: number) {
     return this.backendService.ticket(arg);
+  }
+
+  updateTicketonComplet(ticketId: number) {
+    return this.backendService.complete(ticketId, true);
+  }
+
+  updateTicketOnSelectUser(ticketId: number, userId: number) {
+    return this.backendService.assign(ticketId, userId);
   }
 }

@@ -17,6 +17,8 @@ import { AppRoutingModule } from "./app-routing.module";
 import { UsersService } from "./services/users.service";
 import { TicketsService } from "./services/tickets.service";
 import { DetailTicketResolver } from "./Resolvers/detailTicket.resolver";
+import { userFeatureKey, usersReducer } from "./State/reducers/userReducer";
+import { UserEffects } from "./State/Effects/user/user.effects";
 
 @NgModule({
   declarations: [
@@ -29,7 +31,7 @@ import { DetailTicketResolver } from "./Resolvers/detailTicket.resolver";
   imports: [
     BrowserModule,
     StoreModule.forRoot(
-      { [ticketFeatureKey]: reducers },
+      { [ticketFeatureKey]: reducers, [userFeatureKey]: usersReducer },
       {
         runtimeChecks: {
           strictActionTypeUniqueness: true,
@@ -41,7 +43,7 @@ import { DetailTicketResolver } from "./Resolvers/detailTicket.resolver";
     StoreDevtoolsModule.instrument({
       maxAge: 25,
     }),
-    EffectsModule.forRoot([TicketEffects]),
+    EffectsModule.forRoot([TicketEffects, UserEffects]),
     FormsModule,
     AppRoutingModule,
   ],

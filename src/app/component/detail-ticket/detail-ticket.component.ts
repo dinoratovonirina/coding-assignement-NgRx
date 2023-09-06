@@ -1,10 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Store, select } from "@ngrx/store";
-import { Observable } from "rxjs";
-import { selectTicketSelector } from "src/app/State/Selectors/ticket/ticket.selectors";
+import { BehaviorSubject, Observable, Subject, of } from "rxjs";
+import { filter, map, mergeMap, take, tap } from "rxjs/operators";
+import {
+  updateCompleteOneTicket,
+  updateOneTicket,
+} from "src/app/State/Actions/ticket/ticket.actions";
+import {
+  listTicketSelector,
+  selectTicketSelector,
+} from "src/app/State/Selectors/ticket/ticket.selectors";
+import { loadUserSelect } from "src/app/State/Selectors/user/user.selectors";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { User } from "src/interfaces/user.interface";
+import { isNull } from "util";
 
 @Component({
   selector: "app-detail-ticket",
@@ -14,7 +24,10 @@ import { User } from "src/interfaces/user.interface";
 export class DetailTicketComponent implements OnInit {
   detailTicket$: Observable<Ticket>;
   selectUserForAssign: number = null;
-  listUser$: Observable<User>;
+  private _selectUserForAssign$: BehaviorSubject<number> =
+    new BehaviorSubject<number>(null);
+  listUser$: Observable<User[]>;
+  id: number = this.route.snapshot.params["id"];
 
   constructor(
     private route: ActivatedRoute,
@@ -26,15 +39,121 @@ export class DetailTicketComponent implements OnInit {
     this.onInitOneTicket();
   }
 
-  onInitOneTicket() {
-    this.detailTicket$ = this.store.pipe(select(selectTicketSelector));
+  get selectUserForAssignObs(): Observable<number> {
+    return this._selectUserForAssign$.asObservable();
   }
 
-  onSelectUserForAssign() {}
+  getselectUserForAssignObsValue() {
+    return this._selectUserForAssign$.value;
+  }
+
+  setSelectUserForAssign(arg: number) {
+    this._selectUserForAssign$.next(arg);
+  }
+
+  onInitOneTicket() {
+    this.route.data.subscribe((detaiTicket) => {
+      if (!!detaiTicket.ticket) {
+        this.detailTicket$ = of(detaiTicket.ticket);
+      } else {
+        this.detailTicket$ = this.store.pipe(select(selectTicketSelector)).pipe(
+          filter((ticket: Ticket) => {
+            return Object.keys(ticket).length !== 0;
+          }),
+          mergeMap((ticket: Ticket) =>
+            this.store.pipe(select(loadUserSelect)).pipe(
+              filter((users: User[]) => {
+                return users.length > 0;
+              }),
+              map((users: User[]) => {
+                return {
+                  ...ticket,
+                  assigneeName: !isNull(ticket.assigneeId)
+                    ? users.find((user: User) => user.id == ticket.assigneeId)
+                        .name
+                    : null,
+                };
+              })
+            )
+          )
+        );
+      }
+      this.listUser$ = this.store.pipe(select(loadUserSelect));
+    });
+  }
+
+  onSelectUserForAssign() {
+    if (this.selectUserForAssign) {
+      this.setSelectUserForAssign(this.selectUserForAssign);
+      if (confirm("Voulez-vous assigner ce ticket à cette personne?")) {
+        this.detailTicket$ = this.store.pipe(select(listTicketSelector)).pipe(
+          map((tickets: Ticket[]) =>
+            tickets.find((ticket: Ticket) => {
+              return ticket.id == this.id;
+            })
+          ),
+          take(1),
+          mergeMap((ticket: Ticket) =>
+            this.store.pipe(select(loadUserSelect)).pipe(
+              map((users: User[]) => {
+                return {
+                  ...ticket,
+                  assigneeId: this.selectUserForAssign,
+                  assigneeName: users.find(
+                    (user: User) => user.id == this.selectUserForAssign
+                  ).name,
+                };
+              })
+            )
+          ),
+          tap(() =>
+            this.store.dispatch(
+              updateOneTicket({
+                ticketId: +this.id,
+                userId: +this.selectUserForAssign,
+              })
+            )
+          )
+        );
+      }
+    }
+  }
+
+  onComplete() {
+    if (confirm("Voulez-vous fermer ce ticket?")) {
+      this.detailTicket$ = this.store.pipe(select(listTicketSelector)).pipe(
+        map((tickets: Ticket[]) =>
+          tickets.find((ticket: Ticket) => {
+            return ticket.id == this.id;
+          })
+        ),
+        mergeMap((ticket: Ticket) =>
+          this.store.pipe(select(loadUserSelect)).pipe(
+            map((users: User[]) => {
+              return {
+                ...ticket,
+                assigneeId: this.getselectUserForAssignObsValue(),
+                assigneeName: users.find(
+                  (user: User) =>
+                    user.id == this.getselectUserForAssignObsValue()
+                ).name,
+                completed: true,
+              };
+            })
+          )
+        ),
+        tap(() =>
+          this.store.dispatch(
+            updateCompleteOneTicket({
+              ticketId: +this.id,
+            })
+          )
+        )
+      );
+    }
+  }
 
   onPrecede() {
     this.router.navigate(["/list-ticket"]);
   }
-
-  onComplete() {}
 }
