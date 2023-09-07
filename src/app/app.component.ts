@@ -9,6 +9,7 @@ import { loadUsers } from "./State/Actions/user/user.action";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit {
+  title = "Ticket";
   constructor(private store: Store) {}
 
   ngOnInit(): void {

@@ -9,7 +9,7 @@ import { getOneTicket } from "../State/Actions/ticket/ticket.actions";
 import { listTicketSelector } from "../State/Selectors/ticket/ticket.selectors";
 import { loadUserSelect } from "../State/Selectors/user/user.selectors";
 import { Observable, combineLatest, of } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { map, mergeMap, tap } from "rxjs/operators";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { User } from "src/interfaces/user.interface";
 import { isNull } from "util";
@@ -21,20 +21,25 @@ export class DetailTicketResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<any> {
+  ): Observable<Ticket> {
     const id = +route.params["id"];
     let dataTicket$: Observable<any>;
+    this.store.dispatch(getOneTicket({ id }));
 
-    combineLatest([
-      this.store.pipe(select(listTicketSelector)),
-      this.store.pipe(select(loadUserSelect)),
-      of(id),
-    ])
+    of(id)
       .pipe(
-        map(([tickets, users, id]) => {
-          return tickets
-            .filter((ticket: Ticket) => ticket.id == id)
-            .map((ticket: Ticket) => {
+        mergeMap((id) =>
+          this.store
+            .pipe(select(listTicketSelector))
+            .pipe(
+              map((ticket: Ticket[]) =>
+                ticket.find((ticket: Ticket) => ticket.id === id)
+              )
+            )
+        ),
+        mergeMap((ticket: Ticket) =>
+          this.store.pipe(select(loadUserSelect)).pipe(
+            map((users: User[]) => {
               return {
                 ...ticket,
                 assigneeName: !isNull(ticket.assigneeId)
@@ -42,19 +47,17 @@ export class DetailTicketResolver implements Resolve<any> {
                       .name
                   : null,
               };
-            });
-        })
-      )
-      .subscribe(
-        (dataTicket: any) => {
-          if (dataTicket) dataTicket$ = dataTicket.shift();
-          this.store.dispatch(getOneTicket({ id: id }));
-        },
-        (error) =>
-          alert(
-            `Erreur de recupération de détail du ticket n°:${id} => ${error}`
+            })
           )
-      );
+        )
+      )
+      .subscribe((ticketDetail) => {
+        if (ticketDetail) {
+          dataTicket$ = of(ticketDetail);
+        }
+
+        (error) => alert(`Erreur de récuperation d'un ticket ${error}`);
+      });
 
     return dataTicket$;
   }

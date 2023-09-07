@@ -1,10 +1,11 @@
-import { TestBed } from '@angular/core/testing';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable } from 'rxjs';
+import { TestBed } from "@angular/core/testing";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Observable } from "rxjs";
 
-import { TicketEffects } from './ticket.effects';
+import { TicketEffects } from "./ticket.effects";
+import { BackendService } from "src/app/backend.service";
 
-describe('TicketEffects', () => {
+describe("TicketEffects", () => {
   let actions$: Observable<any>;
   let effects: TicketEffects;
 
@@ -12,14 +13,15 @@ describe('TicketEffects', () => {
     TestBed.configureTestingModule({
       providers: [
         TicketEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+        BackendService,
+      ],
     });
 
     effects = TestBed.inject(TicketEffects);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(effects).toBeTruthy();
   });
 });

@@ -7,8 +7,8 @@ import {
 import { Observable, combineLatest, of } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { Router } from "@angular/router";
-import { loadUsers } from "src/app/State/Actions/user/user.action";
-import { loadTickets } from "src/app/State/Actions/ticket/ticket.actions";
+import { TicketsService } from "src/app/services/tickets.service";
+import { tap } from "rxjs/operators";
 
 @Component({
   selector: "app-list-ticket",
@@ -16,18 +16,22 @@ import { loadTickets } from "src/app/State/Actions/ticket/ticket.actions";
   styleUrls: ["./list-ticket.component.css"],
 })
 export class ListTicketComponent implements OnInit {
-  tickets$: Observable<Ticket[]>;
+  tickets$: Observable<any>;
   isLoader$: Observable<boolean>;
   argFilterTicket$: Observable<any>;
 
-  constructor(private store: Store, private route: Router) {}
+  constructor(
+    private store: Store,
+    private route: Router,
+    private ticketService: TicketsService
+  ) {}
 
   ngOnInit(): void {
     this.iniListTicket();
   }
 
   iniListTicket() {
-    this.tickets$ = this.store.pipe(select(listTicketSelector));
+    this.tickets$ = this.ticketService.listTicketBehavior.asObservable();
     this.isLoader$ = this.store.pipe(select(isLoaderSelector));
   }
 

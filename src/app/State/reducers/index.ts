@@ -47,7 +47,19 @@ export const reducers = createReducer(
       (ticketForUpdate: Ticket) =>
         ticketForUpdate.id === props.ticket.id ? props.ticket : ticketForUpdate
     );
+    console.log(updateOneTicket);
+    return {
+      ...state,
+      tickets: updateOneTicket,
+    };
+  }),
+  on(fromAction.updateCompleteOneTicketSuccess, (state, props) => {
+    const updateOneTicket: Ticket[] = state.tickets.map(
+      (ticketForUpdate: Ticket) =>
+        ticketForUpdate.id === props.ticket.id ? props.ticket : ticketForUpdate
+    );
 
+    console.log(updateOneTicket);
     return {
       ...state,
       tickets: updateOneTicket,

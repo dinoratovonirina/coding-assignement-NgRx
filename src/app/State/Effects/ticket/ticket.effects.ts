@@ -17,6 +17,7 @@ export class TicketEffects {
           map((tickets: Ticket[]) =>
             fromActionTicket.loadTicketsSuccess({ tickets })
           ),
+          tap(({ tickets }) => this.ticketService.setListTicket(tickets)),
           catchError(() => {
             return of(
               fromActionTicket.loadTicketsFailure({
@@ -34,14 +35,14 @@ export class TicketEffects {
       ofType(fromActionTicket.addTicket),
       mergeMap(({ description }) =>
         this.ticketService.addTicket(description).pipe(
-          map((ticket) => fromActionTicket.addTicketSuccess({ ticket }))
-          //catchError(() => {
-          //return of(
-          //fromActionTicket.addTicketFailure({
-          //error: "Erreur d'Ajout ticket",
-          //})
-          //);
-          //})
+          map((ticket) => fromActionTicket.addTicketSuccess({ ticket })),
+          catchError(() => {
+            return of(
+              fromActionTicket.addTicketFailure({
+                error: "Erreur d'Ajout ticket",
+              })
+            );
+          })
         )
       )
     )
@@ -78,7 +79,7 @@ export class TicketEffects {
           catchError((error) => {
             return of(
               fromActionTicket.updateOneTicketFailure({
-                error: "Erreur de recuperation" + error,
+                error: "Erreur de recuperation " + error,
               })
             );
           })
