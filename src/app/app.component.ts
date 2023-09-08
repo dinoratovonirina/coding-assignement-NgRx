@@ -12,8 +12,8 @@ export class AppComponent implements OnInit {
   title = "Ticket";
   constructor(private store: Store) {}
 
-  ngOnInit(): void {
-    this.store.dispatch(loadTickets());
-    this.store.dispatch(loadUsers());
+  async ngOnInit() {
+    await this.store.dispatch(loadTickets());
+    await this.store.dispatch(loadUsers());
   }
 }

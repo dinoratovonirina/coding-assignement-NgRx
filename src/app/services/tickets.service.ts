@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { BackendService } from "../backend.service";
 import { BehaviorSubject } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
+import { catchError } from "rxjs/operators";
+import { error } from "console";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +16,9 @@ export class TicketsService {
   constructor(private readonly backendService: BackendService) {}
 
   get listTikets() {
-    return this.backendService.tickets();
+    return this.backendService
+      .tickets()
+      .pipe(catchError((error) => `Erreur : ${error}`));
   }
 
   get listTicketBehavior() {
@@ -30,18 +34,26 @@ export class TicketsService {
   }
 
   addTicket(description) {
-    return this.backendService.newTicket({ description: description });
+    return this.backendService
+      .newTicket({ description: description })
+      .pipe(catchError((error) => `Erreur : ${error}`));
   }
 
   getTicketById(arg: number) {
-    return this.backendService.ticket(arg);
+    return this.backendService
+      .ticket(arg)
+      .pipe(catchError((error) => `Erreur : ${error}`));
   }
 
   updateTicketonComplet(ticketId: number) {
-    return this.backendService.complete(ticketId, true);
+    return this.backendService
+      .complete(ticketId, true)
+      .pipe(catchError((error) => `Erreur : ${error}`));
   }
 
   updateTicketOnSelectUser(ticketId: number, userId: number) {
-    return this.backendService.assign(ticketId, userId);
+    return this.backendService
+      .assign(ticketId, userId)
+      .pipe(catchError((error) => `Erreur : ${error}`));
   }
 }

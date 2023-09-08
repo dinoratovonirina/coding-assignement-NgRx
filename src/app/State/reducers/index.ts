@@ -47,10 +47,11 @@ export const reducers = createReducer(
       (ticketForUpdate: Ticket) =>
         ticketForUpdate.id === props.ticket.id ? props.ticket : ticketForUpdate
     );
-    console.log(updateOneTicket);
+
     return {
       ...state,
-      tickets: updateOneTicket,
+      ticket: props.ticket,
+      [ticketFeatureKey]: updateOneTicket,
     };
   }),
   on(fromAction.updateCompleteOneTicketSuccess, (state, props) => {
@@ -58,11 +59,10 @@ export const reducers = createReducer(
       (ticketForUpdate: Ticket) =>
         ticketForUpdate.id === props.ticket.id ? props.ticket : ticketForUpdate
     );
-
-    console.log(updateOneTicket);
     return {
       ...state,
-      tickets: updateOneTicket,
+      ticket: props.ticket,
+      [ticketFeatureKey]: updateOneTicket,
     };
   })
 );

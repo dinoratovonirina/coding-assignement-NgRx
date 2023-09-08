@@ -87,6 +87,13 @@ export class BackendService {
             ...ticket,
             assigneeId: +userId,
           };
+        }),
+        tap((ticket: Ticket) => {
+          this.storedTickets = this.storedTickets.map(
+            (ticket_array: Ticket) => {
+              return ticket_array.id === ticket.id ? ticket : ticket_array;
+            }
+          );
         })
       );
     }
@@ -96,7 +103,6 @@ export class BackendService {
 
   public complete(ticketId: number, completed: boolean): Observable<Ticket> {
     const foundTicket = this.findTicketById(+ticketId);
-    console.log(foundTicket);
 
     if (foundTicket) {
       return of(foundTicket).pipe(
@@ -106,6 +112,13 @@ export class BackendService {
             ...ticket,
             completed: true,
           };
+        }),
+        tap((ticket: Ticket) => {
+          this.storedTickets = this.storedTickets.map(
+            (ticket_array: Ticket) => {
+              return ticket_array.id === ticket.id ? ticket : ticket_array;
+            }
+          );
         })
       );
     }

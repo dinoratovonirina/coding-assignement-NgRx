@@ -4,6 +4,7 @@ import { Store, select } from "@ngrx/store";
 import { BehaviorSubject, Observable, combineLatest, of } from "rxjs";
 import { filter, map, mergeMap, take, tap } from "rxjs/operators";
 import {
+  getOneTicket,
   updateCompleteOneTicket,
   updateOneTicket,
 } from "src/app/State/Actions/ticket/ticket.actions";
@@ -52,6 +53,8 @@ export class DetailTicketComponent implements OnInit {
   }
 
   onInitOneTicket() {
+    this.store.dispatch(getOneTicket({ id: this.id }));
+
     this.route.data.subscribe((detaiTicket) => {
       if (!!detaiTicket.ticket) {
         this.detailTicket$ = of(detaiTicket.ticket);
@@ -78,6 +81,7 @@ export class DetailTicketComponent implements OnInit {
           )
         );
       }
+
       this.listUser$ = this.store.pipe(select(loadUserSelect));
     });
   }
@@ -94,13 +98,7 @@ export class DetailTicketComponent implements OnInit {
       );
 
       if (confirm("Voulez-vous assigner ce ticket à cette personne?")) {
-        this.detailTicket$ = this.store.pipe(select(listTicketSelector)).pipe(
-          map((tickets: Ticket[]) =>
-            tickets.find((ticket: Ticket) => {
-              return ticket.id == this.id;
-            })
-          ),
-          take(1),
+        this.detailTicket$ = this.store.pipe(select(selectTicketSelector)).pipe(
           mergeMap((ticket: Ticket) =>
             this.store.pipe(select(loadUserSelect)).pipe(
               map((users: User[]) => {
@@ -128,37 +126,28 @@ export class DetailTicketComponent implements OnInit {
       );
 
       combineLatest([
-        this.store.pipe(select(listTicketSelector)),
+        this.store.pipe(select(selectTicketSelector)),
         this.store.pipe(select(loadUserSelect)),
         this.selectUserForAssignObs,
-        of(this.id),
       ])
         .pipe(
-          map(([tickets, users, selectUserAssign, id]) => {
-            return tickets
-              .filter((ticket: Ticket) => ticket.id == id)
-              .map((ticket: Ticket) => {
-                let assigneeIdTicket =
-                  selectUserAssign == null
-                    ? ticket.assigneeId
-                    : selectUserAssign;
+          map(([ticket, users, selectUserAssign]) => {
+            let assigneeIdTicket =
+              selectUserAssign == null ? ticket.assigneeId : selectUserAssign;
 
-                return {
-                  ...ticket,
-                  assigneeId: +assigneeIdTicket,
-                  assigneeName: !isNaN(ticket.assigneeId)
-                    ? users
-                        .filter((user: User) => +user.id == +assigneeIdTicket)
-                        .shift().name
-                    : null,
-                  completed: true,
-                };
-              });
+            return {
+              ...ticket,
+              assigneeId: +assigneeIdTicket,
+              assigneeName: !isNaN(ticket.assigneeId)
+                ? users.find((user: User) => +user.id == +assigneeIdTicket).name
+                : null,
+              completed: true,
+            };
           })
         )
         .subscribe(
           (detailOnTicketComplet) => {
-            this.detailTicket$ = of(detailOnTicketComplet.shift());
+            this.detailTicket$ = of(detailOnTicketComplet);
           },
           (error) =>
             alert(`Erreur ${error} de recupération du ticket n°: ${this.id}`)
