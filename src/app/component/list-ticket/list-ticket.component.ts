@@ -4,10 +4,9 @@ import {
   isLoaderSelector,
   listTicketSelector,
 } from "src/app/State/Selectors/ticket/ticket.selectors";
-import { Observable, combineLatest, of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { Router } from "@angular/router";
-import { TicketsService } from "src/app/services/tickets.service";
 import {
   filterTicket,
   loadTickets,
@@ -19,15 +18,11 @@ import {
   styleUrls: ["./list-ticket.component.css"],
 })
 export class ListTicketComponent implements OnInit {
-  tickets$: Observable<any>;
+  tickets$: Observable<Ticket[]>;
   isLoader$: Observable<boolean>;
   argFilterTicket$: Observable<any>;
 
-  constructor(
-    private store: Store,
-    private route: Router,
-    private ticketService: TicketsService
-  ) {}
+  constructor(private store: Store, private route: Router) {}
 
   ngOnInit(): void {
     this.iniListTicket();
@@ -41,14 +36,13 @@ export class ListTicketComponent implements OnInit {
 
   onFilterTicket(arg: string) {
     this.argFilterTicket$ = of(arg);
-    this.store.dispatch(filterTicket({ critere: arg }));
     if (!!arg) {
       //this.tickets$ = this.filterTicket(this.tickets$, this.argFilterTicket$);
-      this.tickets$ = this.store.pipe(select(listTicketSelector));
+      this.store.dispatch(filterTicket({ critere: arg }));
     } else {
       this.store.dispatch(loadTickets());
-      this.iniListTicket();
     }
+    this.tickets$ = this.store.pipe(select(listTicketSelector));
   }
 
   /*private filterTicket(
