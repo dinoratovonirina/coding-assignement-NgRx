@@ -8,7 +8,10 @@ import { Observable, combineLatest, of } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { Router } from "@angular/router";
 import { TicketsService } from "src/app/services/tickets.service";
-import { tap } from "rxjs/operators";
+import {
+  filterTicket,
+  loadTickets,
+} from "src/app/State/Actions/ticket/ticket.actions";
 
 @Component({
   selector: "app-list-ticket",
@@ -31,20 +34,24 @@ export class ListTicketComponent implements OnInit {
   }
 
   iniListTicket() {
-    this.tickets$ = this.ticketService.listTicketBehavior.asObservable();
+    //this.tickets$ = this.ticketService.listTicketBehavior.asObservable();
+    this.tickets$ = this.store.pipe(select(listTicketSelector));
     this.isLoader$ = this.store.pipe(select(isLoaderSelector));
   }
 
-  onFilterTicket(arg: any) {
+  onFilterTicket(arg: string) {
     this.argFilterTicket$ = of(arg);
+    this.store.dispatch(filterTicket({ critere: arg }));
     if (!!arg) {
-      this.tickets$ = this.filterTicket(this.tickets$, this.argFilterTicket$);
+      //this.tickets$ = this.filterTicket(this.tickets$, this.argFilterTicket$);
+      this.tickets$ = this.store.pipe(select(listTicketSelector));
     } else {
+      this.store.dispatch(loadTickets());
       this.iniListTicket();
     }
   }
 
-  private filterTicket(
+  /*private filterTicket(
     listTicket$: Observable<Ticket[]>,
     argFilter$: Observable<any>
   ) {
@@ -55,7 +62,7 @@ export class ListTicketComponent implements OnInit {
           ticket.id.toString().includes(argFilter)
       );
     });
-  }
+  }*/
 
   onViewDetailTicket(arg: number) {
     this.route.navigate(["detail-ticket", arg]);

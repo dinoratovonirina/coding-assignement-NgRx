@@ -13,6 +13,12 @@ export const loadTicketsFailure = createAction(
   props<{ error: Error | string }>()
 );
 
+/**************** filter Ticket *******************/
+export const filterTicket = createAction(
+  "[Ticket] filter Ticket",
+  props<{ critere: string }>()
+);
+
 /**************** Add Ticket *******************/
 export const addTicket = createAction(
   "[Ticket] add Ticket",
@@ -21,7 +27,7 @@ export const addTicket = createAction(
 
 export const addTicketSuccess = createAction(
   "[Ticket] add Tickets Success",
-  props<{ ticket: Ticket }>()
+  props<{ ticket: string }>()
 );
 
 export const addTicketFailure = createAction(

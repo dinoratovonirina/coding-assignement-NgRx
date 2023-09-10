@@ -3,7 +3,6 @@ import { BackendService } from "../backend.service";
 import { BehaviorSubject } from "rxjs";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { catchError } from "rxjs/operators";
-import { error } from "console";
 
 @Injectable({
   providedIn: "root",

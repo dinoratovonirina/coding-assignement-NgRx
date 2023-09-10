@@ -30,6 +30,20 @@ export const reducers = createReducer(
       isLoader: true,
     };
   }),
+  on(fromAction.filterTicket, (state, props) => {
+    const ticketAfterFilter: Ticket[] = state.tickets.filter(
+      (ticket: Ticket) =>
+        ticket.description.includes(props.critere) ||
+        ticket.id.toString().includes(props.critere)
+    );
+
+    console.log(ticketAfterFilter);
+
+    return {
+      ...state,
+      [ticketFeatureKey]: ticketAfterFilter,
+    };
+  }),
   on(fromAction.addTicketSuccess, (state, props) => {
     return {
       ...state,

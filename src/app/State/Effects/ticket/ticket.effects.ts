@@ -35,6 +35,7 @@ export class TicketEffects {
       ofType(fromActionTicket.addTicket),
       mergeMap(({ description }) =>
         this.ticketService.addTicket(description).pipe(
+          tap(console.log),
           map((ticket) => fromActionTicket.addTicketSuccess({ ticket })),
           catchError(() => {
             return of(
