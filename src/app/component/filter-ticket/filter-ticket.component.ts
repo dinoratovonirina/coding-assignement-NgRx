@@ -1,4 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
+import {
+  filterTicket,
+  loadTickets,
+} from "src/app/State/Actions/ticket/ticket.actions";
 
 @Component({
   selector: "app-filter-ticket",
@@ -8,13 +13,13 @@ import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 export class FilterTicketComponent implements OnInit {
   public critereForFindTicket: string = "";
 
-  @Output() public textForFilter = new EventEmitter();
-
-  constructor() {}
+  constructor(private store: Store) {}
 
   ngOnInit(): void {}
 
   onFilterListTicket() {
-    this.textForFilter.emit(this.critereForFindTicket);
+    if (!!this.critereForFindTicket)
+      this.store.dispatch(filterTicket({ critere: this.critereForFindTicket }));
+    else this.store.dispatch(loadTickets());
   }
 }

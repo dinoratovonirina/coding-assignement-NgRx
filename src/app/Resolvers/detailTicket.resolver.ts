@@ -5,11 +5,10 @@ import {
 } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { Store, select } from "@ngrx/store";
-import { getOneTicket } from "../State/Actions/ticket/ticket.actions";
 import { listTicketSelector } from "../State/Selectors/ticket/ticket.selectors";
 import { loadUserSelect } from "../State/Selectors/user/user.selectors";
-import { Observable, combineLatest, of } from "rxjs";
-import { catchError, filter, map, mergeMap, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { filter, map, mergeMap } from "rxjs/operators";
 import { Ticket } from "src/interfaces/ticket.interface";
 import { User } from "src/interfaces/user.interface";
 import { isNull } from "util";

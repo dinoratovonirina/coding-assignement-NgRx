@@ -37,8 +37,6 @@ export const reducers = createReducer(
         ticket.id.toString().includes(props.critere)
     );
 
-    console.log(ticketAfterFilter);
-
     return {
       ...state,
       [ticketFeatureKey]: ticketAfterFilter,
